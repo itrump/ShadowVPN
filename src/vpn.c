@@ -526,6 +526,8 @@ int vpn_run(vpn_ctx_t *ctx) {
         }
       }
     }
+    // server will first run here after select
+    // this means socks receives data from clients
     for (i = 0; i < ctx->nsock; i++) {
       int sock = ctx->socks[i];
       if (FD_ISSET(sock, &readset)) {
@@ -536,6 +538,10 @@ int vpn_run(vpn_ctx_t *ctx) {
                     SHADOWVPN_OVERHEAD_LEN + usertoken_len + ctx->args->mtu, 0,
                     (struct sockaddr *)&temp_remote_addr,
                     &temp_remote_addrlen);
+	// log client address:port
+	struct sockaddr_in* addr_in = (struct sockaddr_in*)&temp_remote_addr;
+        logf("client connect from %s:%d, bytes:%d", 
+               inet_ntoa(addr_in->sin_addr), ntohs(addr_in->sin_port), r);
         if (r == -1) {
           if (errno == EAGAIN || errno == EWOULDBLOCK) {
             // do nothing
