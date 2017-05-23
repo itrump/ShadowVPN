@@ -21,6 +21,9 @@ LT_INIT
 AC_HEADER_RESOLV
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h stdlib.h string.h sys/socket.h unistd.h])
 
+# Checks for pthread
+AC_CHECK_LIB([pthread],[pthread_create])
+
 # from OpenVPN configure.ac
 case "$host" in
     *-*-linux*)
